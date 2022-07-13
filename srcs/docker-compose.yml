@@ -4,33 +4,35 @@ services:
 	nginx:
 		build: ./requirements/nginx/
 		image: nginx
-		ports: "443:443"
+		ports: [443:443]
 		restart: always
-		dependd_on: [mariadb]
-		volume:
+		depends_on: [wordpress]
+		volume: [wordpress]
 		networks: [odomenic-net]
 	
 	wordpress:
-    build: ./requirements/wordpress/
+    	build: ./requirements/wordpress/
 		image: wordpress
 		restart: always #or on-failure
-		dependd_on: [mariadb]
+		depends_on: [mariadb]
 		env_file: [.env]
-		volume:
+		volume: [wordpress]
 		networks: [odomenic-net]
 
-    mariadb:
+  mariadb:
 		build: ./requirements/mariadb/
-    image: mariadb
+    	image: mariadb
 		restart: always
 		env_file: [.env]
-		volume:
+		volume: [mariadb]
 		networks: [odomenic-net]
 
 volumes:
 	mariadb:
+		driver: local
 
 	wordpress:
+		driver: local
 
 "/home/odomenic/data"
 
