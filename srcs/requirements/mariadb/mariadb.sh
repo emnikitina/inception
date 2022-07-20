@@ -1,5 +1,7 @@
 chown -R mysql:mysql /var/lib/mysql
 
+if [ ! -d "/var/lib/mysql/$DB_NAME" ]; then
+
 service mysql start
 #mysql -u root mysql < create_bd.sql
 
@@ -10,5 +12,6 @@ mysql -u root -e "FLUSH PRIVILEGES;"
 
 mysqladmin -u root password $ROOT_PASSWORD
 service mysql stop
+fi
 
 /usr/bin/mysqld_safe

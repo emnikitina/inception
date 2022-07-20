@@ -1,8 +1,8 @@
 FROM debian:buster
 
 #install service
-RUN apk update && apk upgrade &&\
-    apk add mariadb-server -y &&\
+RUN apt update &&\
+    apt add mariadb-server -y &&\
     sed -i 's/^bind-address/#&/' /etc/mysql/mariadb.conf.d/50-server.cnf &&\
     rm -rf /var/lib/apt/lists/*;
 

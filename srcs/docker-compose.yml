@@ -2,7 +2,7 @@ version: "3"
 
 services:
 	nginx:
-		build: ./requirements/nginx/
+		build: requirements/nginx/
 		image: nginx
 		ports: [443:443]
 		restart: always
@@ -11,7 +11,7 @@ services:
 		networks: [odomenic-net]
 	
 	wordpress:
-    	build: ./requirements/wordpress/
+    	build: requirements/wordpress/
 		image: wordpress
 		restart: always #or on-failure
 		depends_on: [mariadb]
@@ -20,12 +20,15 @@ services:
 		networks: [odomenic-net]
 
   mariadb:
-		build: ./requirements/mariadb/
+		build: requirements/mariadb/
     	image: mariadb
 		restart: always
 		env_file: [.env]
 		volume: [mariadb]
 		networks: [odomenic-net]
+	
+	site: # to install my html page
+
 
 volumes:
 	mariadb:
