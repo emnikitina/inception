@@ -1,44 +1,43 @@
 version: "3"
 
 services:
-	nginx:
-		build: requirements/nginx/
-		image: nginx
-		ports: [443:443]
-		restart: always
-		depends_on: [wordpress]
-		volume: [wordpress]
-		networks: [odomenic-net]
-	
-	wordpress:
-    	build: requirements/wordpress/
-		image: wordpress
-		restart: always #or on-failure
-		depends_on: [mariadb]
-		env_file: [.env]
-		volume: [wordpress]
-		networks: [odomenic-net]
-
-  mariadb:
-		build: requirements/mariadb/
-    	image: mariadb
-		restart: always
-		env_file: [.env]
-		volume: [mariadb]
-		networks: [odomenic-net]
-	
-	site: # to install my html page
-
+        nginx:
+                build: requirements/nginx/
+                image: nginx
+                container_name: nginx
+                ports: [443:443]
+                restart: always
+                volumes: [wordpress:/var/www/]
+                depends_on: [wordpress]
+                networks: [odomenic-net]
+        mariadb:
+                build: 
+                        context: requirements/mariadb/
+                        args:
+                                - DB_NAME
+                                - DB_USER
+                                - DB_PASSWORD
+                                - ROOT_PASSWORD
+                image: mariadb
+                container_name: mariadb
+                restart: always
+                volumes: [mariadb:/var/mylib/mysql/]
+                env_file: [.env]
+                networks: [odomenic-net]
+        wordpress:
+                build: requirements/wordpress/
+                image: wordpress
+                container_name: wordpress
+                restart: always
+                volumes: [wordpress:/var/www/]
+                depends_on: [mariadb]
+                env_file: [.env]
+                networks: [odomenic-net]
 
 volumes:
-	mariadb:
-		driver: local
+        wordpress: {name: wordpress, driver: local, driver_opts: {type: none, o: bind, device: /home/odomenic/data/wordpress}}
+        mariadb: {name: mariadb, driver: local, driver_opts: {type: none, o: bind, device: /home/odomenic/data/mariadb}}
 
-	wordpress:
-		driver: local
-
-"/home/odomenic/data"
-
-network: 
-	odomenic-net:
-		driver: bridge
+networks:
+        odomenic-net:
+                driver: bridge

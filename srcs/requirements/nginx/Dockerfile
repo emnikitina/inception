@@ -1,9 +1,9 @@
 FROM debian:buster
 
 #install service
-RUN apk update -y && apk -y upgrade &&\
-    apk install nginx openssl &&\
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y &&\
+	apt-get -y install nginx openssl &&\
+	rm -rf /var/lib/apt/lists/*
 
 #setting ssl certificate
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -14,6 +14,8 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 #copy
 COPY ./nginx.conf /etc/nginx/sites-available/default
 RUN mkdir -p /run/nginx
+
+RUN chown -R www-data /var/www/
 
 #???? what folder??
 VOLUME ["/var/www/"]

@@ -2,26 +2,29 @@ FROM debian:buster
 
 #instal services
 RUN apt-get update -y &&\
-    apt-get install -y php7-fpm php7-mbstring php7-common php7-iconv php7-json php7-gd php7-curl php7-xml php7-pdo php7-pdo_mysql mariadb-client &&\
+    apt-get install -y php7.3 php-mysql php-fpm php-pdo php-gd php-cli php-mbstring php-xml mariadb-client && \
     rm -rf /var/lib/apt/lists/*
 
-#setting wordpress
-RUN wget http://wordpress.org/latest.tar.gz
-RUN tar -C /var/www/ -xzvf latest.tar.gz
-RUN rm latest.tar.gz
-COPY ./wp-config.php /var/www/wordpress/
-RUN chmod -R 777 /var/www/wordpress
-RUN chmod -R 777 /var/www
+RUN apt-get update -y && \
+    apt-get install -y wget && \
+    wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x wp-cli.phar && \
+    mv wp-cli.phar /usr/local/bin/wp && \
+    apt remove -y wget && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN wp core download --path=/usr/src/wordpress --allow-root 
+COPY www.conf /etc/php/7.3/fpm/pool.d/www.conf
+RUN chmod 777 /etc/php/7.3/fpm/pool.d/www.conf
 
 
 #to copy
 COPY ./start_wp.sh /
-RUN chmod +x start_wp.sh
+# COPY wp-config.php /var/www/wordpress/
+RUN chmod +x start_wp.sh /etc/php/7.3/fpm/pool.d/www.conf
 
-#what path set to volume ??
-VOLUME [ "??" ]
-
+VOLUME ["/var/www/"]
 
 #to start
 EXPOSE 9000
-ENTRYPOINT sh start_wp.sh
+ENTRYPOINT ["bash", "start_wp.sh"]
