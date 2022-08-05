@@ -33,10 +33,27 @@ services:
                 depends_on: [mariadb]
                 env_file: [.env]
                 networks: [odomenic-net]
+        site:
+                build: requirements/bonus/site/
+                image: site
+                container_name: site
+                restart: always
+                volumes: [site:/var/www/]
+                networks: [odomenic-net]
+        adminer:
+                build: requirements/bonus/adminer/
+                image: adminer
+                container_name: adminer
+                restart: always
+                volumes: [wordpress:/var/www/html/]
+                depends_on: [wordpress]
+                networks: [odomenic-net]
+
 
 volumes:
         wordpress: {name: wordpress, driver: local, driver_opts: {type: none, o: bind, device: /home/odomenic/data/wordpress}}
         mariadb: {name: mariadb, driver: local, driver_opts: {type: none, o: bind, device: /home/odomenic/data/mariadb}}
+        site: {name: site, driver: local, driver_opts: {type: none, o: bind, device: /home/odomenic/data/site}}
 
 networks:
         odomenic-net:
