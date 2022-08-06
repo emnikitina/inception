@@ -38,7 +38,7 @@ services:
                 image: site
                 container_name: site
                 restart: always
-                volumes: [site:/var/www/]
+                volumes: [wordpress:/var/www/]
                 networks: [odomenic-net]
         adminer:
                 build: requirements/bonus/adminer/
@@ -53,8 +53,7 @@ services:
 volumes:
         wordpress: {name: wordpress, driver: local, driver_opts: {type: none, o: bind, device: /home/odomenic/data/wordpress}}
         mariadb: {name: mariadb, driver: local, driver_opts: {type: none, o: bind, device: /home/odomenic/data/mariadb}}
-        site: {name: site, driver: local, driver_opts: {type: none, o: bind, device: /home/odomenic/data/site}}
-
+        
 networks:
         odomenic-net:
                 driver: bridge

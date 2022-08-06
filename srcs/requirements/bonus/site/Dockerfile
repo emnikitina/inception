@@ -13,8 +13,9 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 RUN mkdir -p /run/nginx
 RUN mkdir -p /var/www/site/
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./index.html /var/www/site/
-COPY ./picture.jpg /
-RUN mv ./picture.jpg /var/www/site/
+COPY index.html /
+RUN cp index.html /var/www/site/
+RUN chmod 777 /var/www/site/index.html
+
 
 CMD ["nginx", "-g", "daemon off;"]

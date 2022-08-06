@@ -1,9 +1,10 @@
 FROM debian:buster
 
-RUN apt-get update -y &&\
-	apt-get install wget -y
+RUN apt-get update
 
-RUN mkdir -p /var/www/html/
-RUN wget "http://www.adminer.org/latest.php" -O /var/www/html/adminer.php
+RUN apt-get install wget -y
 
-CMD ["bash"]
+RUN wget https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php &&\
+	mv adminer-4.8.1.php adminer.php
+
+CMD sleep 15 && cp adminer.php /var/www/html/wordpress/
